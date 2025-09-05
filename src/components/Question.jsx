@@ -8,7 +8,7 @@ function Question({ question, selectedAnswer, onAnswerSelect }) {
 
   return (
     <div className="question">
-      <h2>{question.text}</h2>
+      <h2 className="question-text">{question.text}</h2>
       <AnswerOptions
         options={question.options}
         selectedAnswer={selectedAnswer}

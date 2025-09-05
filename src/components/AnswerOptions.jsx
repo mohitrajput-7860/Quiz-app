@@ -4,7 +4,12 @@ function AnswerOptions({ options, selectedAnswer, onAnswerSelect }) {
   return (
     <div className="answer-options">
       {options.map((option, index) => (
-        <label key={index}>
+        <label
+          key={index}
+          className={`answer-option ${
+            selectedAnswer === option ? 'selected' : ''
+          }`}
+        >
           <input
             type="radio"
             name="answer"

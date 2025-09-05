@@ -1,10 +1,10 @@
 // QuizContainer.js
-import React, { useState, useEffect } from 'react';
-import Question from './Question';
-import NavigationButtons from './NavigationButtons';
-import ScoreDisplay from './ScoreDisplay';
-import QuizSettings from './QuizSettings';
-import ProgressBar from './ProgressBar';
+import React, { useState, useEffect } from "react";
+import Question from "./Question";
+import NavigationButtons from "./NavigationButtons";
+import ScoreDisplay from "./ScoreDisplay";
+import QuizSettings from "./QuizSettings";
+import ProgressBar from "./ProgressBar";
 
 function QuizContainer() {
   const [questions, setQuestions] = useState([]);
@@ -28,7 +28,7 @@ function QuizContainer() {
   }, [quizStarted, quizCompleted, timeRemaining]);
 
   function decodeHTML(html) {
-    var txt = document.createElement('textarea');
+    var txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
   }
@@ -40,12 +40,15 @@ function QuizContainer() {
         `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`
       );
       if (!response.ok) {
-        throw new Error('Failed to fetch questions');
+        throw new Error("Failed to fetch questions");
       }
       const data = await response.json();
       const formattedQuestions = data.results.map((q) => ({
         text: decodeHTML(q.question),
-        options: q.incorrect_answers.map(decodeHTML).concat(decodeHTML(q.correct_answer)).sort(() => Math.random() - 0.5),
+        options: q.incorrect_answers
+          .map(decodeHTML)
+          .concat(decodeHTML(q.correct_answer))
+          .sort(() => Math.random() - 0.5),
         correctAnswer: decodeHTML(q.correct_answer),
       }));
       setQuestions(formattedQuestions);
@@ -103,49 +106,70 @@ function QuizContainer() {
   };
 
   if (loading) {
-    return <div>Loading questions...</div>;
+    return <div className="loading">Loading questions...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="error">Error: {error}</div>;
   }
 
   if (!quizStarted) {
-    return <QuizSettings onStartQuiz={handleStartQuiz} />;
+    return (
+      <div className="quiz-settings">
+        <QuizSettings onStartQuiz={handleStartQuiz} />
+      </div>
+    );
   }
 
   if (quizCompleted) {
     return (
-      <div>
+      <div className="results-container quiz-card">
         <ScoreDisplay score={calculateScore()} total={questions.length} />
-        <button onClick={() => setShowCorrectAnswers(!showCorrectAnswers)}>
-          {showCorrectAnswers ? 'Hide' : 'Show'} Correct Answers
+
+        <button
+          className="btn"
+          onClick={() => setShowCorrectAnswers(!showCorrectAnswers)}
+        >
+          {showCorrectAnswers ? "Hide" : "Show"} Correct Answers
         </button>
+
         {showCorrectAnswers && (
-          <div>
+          <div className="correct-answers">
             {questions.map((q, index) => (
-              <div key={index}>
-                <p>{q.text}</p>
-                <p>Your answer: {userAnswers[index] || 'Not answered'}</p>
+              <div key={index} className="answer-review">
+                <p>
+                  <strong>Q:</strong> {q.text}
+                </p>
+                <p>Your answer: {userAnswers[index] || "Not answered"}</p>
                 <p>Correct answer: {q.correctAnswer}</p>
               </div>
             ))}
           </div>
         )}
-        <button onClick={handleRestartQuiz}>Restart Quiz</button>
+
+        <button className="btn" onClick={handleRestartQuiz}>
+          Restart Quiz
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="quiz-container">
+    <div className="quiz-card">
+      {/* Progress Bar */}
       <ProgressBar current={currentQuestionIndex + 1} total={questions.length} />
-      <div>Time remaining: {timeRemaining} seconds</div>
+
+      {/* Timer */}
+      <div className="info-box">⏳ {timeRemaining} seconds</div>
+
+      {/* Question */}
       <Question
         question={questions[currentQuestionIndex]}
         selectedAnswer={userAnswers[currentQuestionIndex]}
         onAnswerSelect={handleAnswerSelect}
       />
+
+      {/* Navigation */}
       <NavigationButtons
         currentQuestionIndex={currentQuestionIndex}
         totalQuestions={questions.length}

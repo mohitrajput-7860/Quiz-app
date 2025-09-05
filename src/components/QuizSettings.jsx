@@ -19,6 +19,8 @@ function QuizSettings({ onStartQuiz }) {
   return (
     <div className="quiz-settings">
       <h2>Quiz Settings</h2>
+
+      {/* Category Dropdown */}
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="">Select Category</option>
         {categories.map((cat) => (
@@ -27,6 +29,8 @@ function QuizSettings({ onStartQuiz }) {
           </option>
         ))}
       </select>
+
+      {/* Difficulty Dropdown */}
       <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
         <option value="">Select Difficulty</option>
         {difficulties.map((diff) => (
@@ -35,7 +39,11 @@ function QuizSettings({ onStartQuiz }) {
           </option>
         ))}
       </select>
-      <button onClick={handleStart}>Start Quiz</button>
+
+      {/* Start Quiz Button */}
+      <button className="start-btn" onClick={handleStart}>
+        Start Quiz
+      </button>
     </div>
   );
 }
