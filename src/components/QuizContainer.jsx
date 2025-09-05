@@ -1,4 +1,4 @@
-// QuizContainer.js
+// QuizContainer.jsx
 import React, { useState, useEffect } from "react";
 import Question from "./Question";
 import NavigationButtons from "./NavigationButtons";
@@ -105,21 +105,14 @@ function QuizContainer() {
     setShowCorrectAnswers(false);
   };
 
-  if (loading) {
-    return <div className="loading">Loading questions...</div>;
-  }
-
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
-
-  if (!quizStarted) {
+  if (loading) return <div className="loading">Loading questions...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+  if (!quizStarted)
     return (
       <div className="quiz-settings">
         <QuizSettings onStartQuiz={handleStartQuiz} />
       </div>
     );
-  }
 
   if (quizCompleted) {
     return (
@@ -127,27 +120,32 @@ function QuizContainer() {
         <ScoreDisplay score={calculateScore()} total={questions.length} />
 
         <button
-          className="btn"
+          className="btn show-answers-btn"
           onClick={() => setShowCorrectAnswers(!showCorrectAnswers)}
         >
           {showCorrectAnswers ? "Hide" : "Show"} Correct Answers
         </button>
 
         {showCorrectAnswers && (
-          <div className="correct-answers">
+          <div className="correct-answers-container">
             {questions.map((q, index) => (
-              <div key={index} className="answer-review">
+              <div key={index} className="correct-answer-card">
                 <p>
-                  <strong>Q:</strong> {q.text}
+                  <strong>Q{index + 1}:</strong> {q.text}
                 </p>
-                <p>Your answer: {userAnswers[index] || "Not answered"}</p>
-                <p>Correct answer: {q.correctAnswer}</p>
+                <p>
+                  <strong>Your answer:</strong>{" "}
+                  {userAnswers[index] || "Not answered"}
+                </p>
+                <p>
+                  <strong>Correct answer:</strong> {q.correctAnswer}
+                </p>
               </div>
             ))}
           </div>
         )}
 
-        <button className="btn" onClick={handleRestartQuiz}>
+        <button className="btn btn-primary" onClick={handleRestartQuiz}>
           Restart Quiz
         </button>
       </div>
